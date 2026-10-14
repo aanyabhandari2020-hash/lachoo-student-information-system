@@ -4,294 +4,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lachoo Student Information System</title>
+  <title>Lachoo Memorial College | Student Information System</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="college-emblem">L</div>
+      <h1>Lachoo Memorial College</h1>
+      <p class="muted">of Science and Technology</p>
+      <h2>Student Information Page</h2>
+      <p>Welcome to the College ERP Portal</p>
+
+      <form id="loginForm">
+        <label for="loginName">Your Name</label>
+        <input id="loginName" type="text" placeholder="Enter your name"
+               required>
+
+        <label for="loginRole">Login As</label>
+        <select id="loginRole">
+          <option value="Guest">Guest</option>
+          <option value="Admin">Admin</option>
+          <option value="Faculty">Faculty</option>
+        </select>
+
+        <button type="submit" class="primary-btn full-width">
+          Login to Dashboard
+        </button>
+      </form>
+
+      <p class="demo-note">
+        Demonstration login only. Do not enter real passwords or sensitive data.
+      </p>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION -->
+  <div id="app" class="app hidden">
+
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-icon">L</div>
+        <div class="brand-logo">L</div>
         <div>
-          <h2>Lachoo ERP</h2>
-          <p>Student Information System</p>
+          <h2>Lachoo Memorial</h2>
+          <p>College ERP System</p>
         </div>
       </div>
 
-      <div class="profile-mini">
-        <div class="avatar">A</div>
-        <div>
-          <strong>Administrator</strong>
-          <small>College Management</small>
-        </div>
-      </div>
-
-      <nav>
+      <div class="nav-heading">MAIN MENU</div>
+      <nav id="navigation">
         <button class="nav-link active" data-page="dashboard">▦ Dashboard</button>
-        <button class="nav-link" data-page="students">♙ Students</button>
         <button class="nav-link" data-page="academics">▤ Academics</button>
+        <button class="nav-link" data-page="students">♙ Students</button>
         <button class="nav-link" data-page="attendance">◷ Attendance</button>
         <button class="nav-link" data-page="performance">▥ Performance</button>
-        <button class="nav-link" data-page="courses">▧ Courses</button>
+        <button class="nav-link" data-page="courses">▣ Courses</button>
         <button class="nav-link" data-page="exams">✎ Exams</button>
         <button class="nav-link" data-page="fees">₹ Fees</button>
         <button class="nav-link" data-page="parents">♧ Parents Portal</button>
-        <button class="nav-link" data-page="programs">▣ Programs</button>
-        <button class="nav-link" data-page="faculty">♟ Faculty</button>
-        <button class="nav-link" data-page="profile">⚙ My Profile</button>
+        <button class="nav-link" data-page="programs">▦ Programs</button>
+        <button class="nav-link" data-page="faculty">♙ Faculty</button>
       </nav>
 
-      <button class="logout" id="logoutBtn">↪ Logout</button>
+      <div class="nav-heading account-heading">ACCOUNT</div>
+      <nav>
+        <button class="nav-link" data-page="profile">⚙ My Profile</button>
+        <button class="nav-link logout-link" id="logoutBtn">⇥ Logout</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="status-dot"></span> Demo portal active
+      </div>
     </aside>
 
-    <main class="main">
+    <main class="main-content">
       <header class="topbar">
-        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+        <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">☰</button>
         <div>
-          <h1 id="pageTitle">Dashboard</h1>
-          <p id="todayDate"></p>
+          <h2 id="pageHeading">Dashboard</h2>
+          <p id="pageSubheading">Student management at a glance</p>
         </div>
-        <div class="top-user">
-          <span class="online-dot"></span>
-          Admin
+        <div class="user-summary">
+          <div class="avatar" id="userAvatar">A</div>
+          <div>
+            <strong id="userName">Administrator</strong>
+            <p id="userRole">Admin</p>
+          </div>
         </div>
       </header>
 
-      <div class="content">
-        <section class="page active" id="dashboard">
-          <div class="welcome">
-            <div>
-              <p class="eyebrow">COLLEGE ADMINISTRATION</p>
-              <h2>Welcome to Lachoo ERP</h2>
-              <p>Manage student records and college information from one place.</p>
-            </div>
-            <button class="primary-btn" data-go="students">Manage Students →</button>
+      <div class="content-area">
+
+        <section class="welcome-banner">
+          <div>
+            <p class="eyebrow">LACHOO MEMORIAL COLLEGE OF SCIENCE AND TECHNOLOGY</p>
+            <h1>Student Information Page</h1>
+            <p>Manage all student records, academic activities and college information.</p>
           </div>
-
-          <div class="stats-grid">
-            <article class="stat-card">
-              <div class="stat-symbol blue">♙</div>
-              <p>Total Students</p>
-              <h2 id="totalStudents">0</h2>
-              <small>Registered records</small>
-            </article>
-            <article class="stat-card">
-              <div class="stat-symbol green">▤</div>
-              <p>Courses</p>
-              <h2 id="totalCourses">0</h2>
-              <small>Available courses</small>
-            </article>
-            <article class="stat-card">
-              <div class="stat-symbol orange">♟</div>
-              <p>Faculty Members</p>
-              <h2 id="totalFaculty">0</h2>
-              <small>Listed faculty</small>
-            </article>
-            <article class="stat-card">
-              <div class="stat-symbol purple">◷</div>
-              <p>Average Attendance</p>
-              <h2 id="averageAttendance">0%</h2>
-              <small>Across student records</small>
-            </article>
-          </div>
-
-          <section class="panel">
-            <div class="panel-heading">
-              <div>
-                <h3>Recently Added Students</h3>
-                <p>Latest student records</p>
-              </div>
-              <button class="secondary-btn" data-go="students">View All</button>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr><th>Roll No.</th><th>Student Name</th><th>Course</th><th>Year</th><th>Status</th></tr>
-                </thead>
-                <tbody id="recentStudents"></tbody>
-              </table>
-            </div>
-          </section>
+          <div class="banner-symbol">🎓</div>
         </section>
 
-        <section class="page" id="students">
-          <div class="section-intro">
-            <div>
-              <p class="eyebrow">RECORD MANAGEMENT</p>
-              <h2>Student Management</h2>
-              <p>Search, add, edit, view, and delete student records.</p>
-            </div>
-            <button class="primary-btn" id="addStudentBtn">＋ Add Student</button>
-          </div>
+        <div id="pageContent"></div>
 
-          <div class="stats-grid compact-stats">
-            <article class="stat-card">
-              <p>Total Students</p><h2 id="studentCount">0</h2>
-            </article>
-            <article class="stat-card">
-              <p>Courses Represented</p><h2 id="representedCourses">0</h2>
-            </article>
-            <article class="stat-card">
-              <p>Average Attendance</p><h2 id="studentAvgAttendance">0%</h2>
-            </article>
-          </div>
-
-          <section class="panel">
-            <div class="search-row">
-              <div class="search-box">
-                <span>⌕</span>
-                <input id="studentSearch" type="search"
-                  placeholder="Search name, roll number, course, or parent..."
-                  aria-label="Search students">
-              </div>
-              <select id="courseFilter" aria-label="Filter by course">
-                <option value="">All Courses</option>
-              </select>
-              <button class="secondary-btn" id="clearSearch">Clear</button>
-            </div>
-
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Roll No.</th>
-                    <th>Student Details</th>
-                    <th>Course</th>
-                    <th>Year</th>
-                    <th>Attendance</th>
-                    <th>Fees</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="studentsTable"></tbody>
-              </table>
-            </div>
-            <div class="table-footer">
-              <span id="resultsCount">0 students</span>
-              <span>Records saved in this browser</span>
-            </div>
-          </section>
-        </section>
-
-        <section class="page" id="academics">
-          <div class="section-intro"><div><h2>Academics</h2><p>Academic overview and student enrolment.</p></div></div>
-          <div class="stats-grid">
-            <article class="stat-card"><p>Enrolled Students</p><h2 id="academicStudents">0</h2></article>
-            <article class="stat-card"><p>Available Courses</p><h2 id="academicCourses">0</h2></article>
-          </div>
-          <section class="panel"><h3>Academic Information</h3><p>Use Student Management to maintain enrolment records. This demo does not connect to a college database.</p></section>
-        </section>
-
-        <section class="page" id="attendance">
-          <div class="section-intro"><div><h2>Attendance</h2><p>Attendance values stored with student records.</p></div></div>
-          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Roll No.</th><th>Student</th><th>Course</th><th>Attendance</th></tr></thead><tbody id="attendanceTable"></tbody></table></div></section>
-        </section>
-
-        <section class="page" id="performance">
-          <div class="section-intro"><div><h2>Student Performance</h2><p>View recorded marks and attendance.</p></div></div>
-          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Roll No.</th><th>Student</th><th>Course</th><th>Marks</th><th>Attendance</th></tr></thead><tbody id="performanceTable"></tbody></table></div></section>
-        </section>
-
-        <section class="page" id="courses">
-          <div class="section-intro"><div><h2>Courses</h2><p>Courses represented in this demo.</p></div></div>
-          <div class="cards-grid" id="coursesGrid"></div>
-        </section>
-
-        <section class="page" id="exams">
-          <div class="section-intro"><div><h2>Examinations</h2><p>Examination overview.</p></div></div>
-          <section class="panel"><h3>Examination Management</h3><p>Examination schedules and results can be added when a database-backed version is developed.</p></section>
-        </section>
-
-        <section class="page" id="fees">
-          <div class="section-intro"><div><h2>Fee Management</h2><p>Fee information saved for each student.</p></div></div>
-          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Roll No.</th><th>Student</th><th>Course</th><th>Fee Status</th></tr></thead><tbody id="feesTable"></tbody></table></div></section>
-        </section>
-
-        <section class="page" id="parents">
-          <div class="section-intro"><div><h2>Parents Portal</h2><p>Parent and guardian information.</p></div></div>
-          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Roll No.</th><th>Student</th><th>Parent/Guardian</th><th>Phone</th></tr></thead><tbody id="parentsTable"></tbody></table></div></section>
-        </section>
-
-        <section class="page" id="programs">
-          <div class="section-intro"><div><h2>Programs</h2><p>Academic programs in this demonstration.</p></div></div>
-          <div class="cards-grid" id="programsGrid"></div>
-        </section>
-
-        <section class="page" id="faculty">
-          <div class="section-intro"><div><h2>Faculty</h2><p>Sample faculty directory.</p></div></div>
-          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Faculty ID</th><th>Name</th><th>Department</th></tr></thead><tbody id="facultyTable"></tbody></table></div></section>
-        </section>
-
-        <section class="page" id="profile">
-          <div class="section-intro"><div><h2>My Profile</h2><p>Demo administrator profile.</p></div></div>
-          <section class="panel profile-panel"><div class="avatar large">A</div><div><h3>Administrator</h3><p>Lachoo Student Information System</p><p>Role: Demo Administrator</p><small>This demo does not implement secure user authentication.</small></div></section>
-        </section>
-
-        <footer>© <span id="year"></span> Lachoo Student Information System · Educational demonstration</footer>
+        <footer>
+          <p>© 2026 Lachoo Memorial College — Student ERP Demonstration</p>
+          <p>Fictional data • Independent student project • Not an official college portal</p>
+        </footer>
       </div>
     </main>
   </div>
 
-  <div class="modal-backdrop" id="studentModal" hidden>
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <!-- STUDENT FORM -->
+  <div id="studentModal" class="modal hidden">
+    <div class="modal-card">
       <div class="modal-heading">
-        <div><p class="eyebrow">STUDENT RECORD</p><h2 id="modalTitle">Add Student</h2></div>
-        <button class="close-btn" id="closeModal" aria-label="Close">×</button>
+        <h2 id="modalTitle">Add Student</h2>
+        <button id="closeModal" class="icon-btn" type="button">✕</button>
       </div>
 
       <form id="studentForm">
-        <input type="hidden" id="editId">
-        <div class="form-grid">
-          <label>Student Full Name *
-            <input id="studentName" required maxlength="100" placeholder="Enter full name">
-          </label>
-          <label>Roll Number *
-            <input id="rollNumber" required maxlength="30" placeholder="e.g. BCA2026001">
-          </label>
-          <label>Course *
-            <select id="studentCourse" required>
-              <option value="">Select course</option>
-              <option>BCA</option><option>BBA</option><option>BCOM</option>
-              <option>BA</option><option>BSC</option><option>MCA</option>
-              <option>MBA</option><option>MSC</option><option>Other</option>
-            </select>
-          </label>
-          <label>Academic Year *
-            <select id="studentYear" required>
-              <option value="">Select year</option>
-              <option>1st Year</option><option>2nd Year</option>
-              <option>3rd Year</option><option>4th Year</option>
-              <option>Final Year</option>
-            </select>
-          </label>
-          <label>Parent/Guardian Name
-            <input id="parentName" maxlength="100" placeholder="Enter parent name">
-          </label>
-          <label>Phone Number
-            <input id="studentPhone" type="tel" maxlength="20" placeholder="Enter phone number">
-          </label>
-          <label>Attendance (%)
-            <input id="studentAttendance" type="number" min="0" max="100" value="0" required>
-          </label>
-          <label>Marks (%)
-            <input id="studentMarks" type="number" min="0" max="100" value="0" required>
-          </label>
-          <label>Fee Status
-            <select id="studentFees">
-              <option>Paid</option><option>Pending</option><option>Partial</option>
-            </select>
-          </label>
+        <input type="hidden" id="editStudentId">
+
+        <label for="studentName">Student Name</label>
+        <input id="studentName" required maxlength="80">
+
+        <label for="studentCourse">Course</label>
+        <select id="studentCourse">
+          <option>BCA</option>
+          <option>BBA</option>
+          <option>B.Com</option>
+          <option>B.Sc</option>
+          <option>BA</option>
+          <option>MCA</option>
+        </select>
+
+        <label for="studentParent">Parent/Guardian Name</label>
+        <input id="studentParent" required maxlength="80">
+
+        <div class="form-row">
+          <div>
+            <label for="studentAttendance">Attendance %</label>
+            <input id="studentAttendance" type="number" min="0" max="100"
+                   value="85" required>
+          </div>
+          <div>
+            <label for="studentMarks">Performance %</label>
+            <input id="studentMarks" type="number" min="0" max="100"
+                   value="75" required>
+          </div>
         </div>
-        <p class="form-error" id="formError" role="alert"></p>
-        <div class="modal-actions">
-          <button type="button" class="secondary-btn" id="cancelModal">Cancel</button>
-          <button type="submit" class="primary-btn" id="saveStudentBtn">Save Student</button>
-        </div>
+
+        <label for="studentFee">Total Fee (₹)</label>
+        <input id="studentFee" type="number" min="0" value="40000" required>
+
+        <button type="submit" class="primary-btn full-width">Save Student Record</button>
       </form>
-    </section>
+    </div>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="script.js"></script>
 </body>
 </html>
