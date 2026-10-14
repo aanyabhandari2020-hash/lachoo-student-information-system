@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lachoo Memorial College | Student Information System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="college-emblem">L</div>
+      <h1>Lachoo Memorial College</h1>
+      <p class="muted">of Science and Technology</p>
+      <h2>Student Information Page</h2>
+      <p>Welcome to the College ERP Portal</p>
+
+      <form id="loginForm">
+        <label for="loginName">Your Name</label>
+        <input id="loginName" type="text" placeholder="Enter your name"
+               required>
+
+        <label for="loginRole">Login As</label>
+        <select id="loginRole">
+          <option value="Guest">Guest</option>
+          <option value="Admin">Admin</option>
+          <option value="Faculty">Faculty</option>
+        </select>
+
+        <button type="submit" class="primary-btn full-width">
+          Login to Dashboard
+        </button>
+      </form>
+
+      <p class="demo-note">
+        Demonstration login only. Do not enter real passwords or sensitive data.
+      </p>
+    </div>
+  </div>
+
+  <!-- MAIN APPLICATION -->
+  <div id="app" class="app hidden">
+
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-logo">L</div>
+        <div>
+          <h2>Lachoo Memorial</h2>
+          <p>College ERP System</p>
+        </div>
+      </div>
+
+      <div class="nav-heading">MAIN MENU</div>
+      <nav id="navigation">
+        <button class="nav-link active" data-page="dashboard">▦ Dashboard</button>
+        <button class="nav-link" data-page="academics">▤ Academics</button>
+        <button class="nav-link" data-page="students">♙ Students</button>
+        <button class="nav-link" data-page="attendance">◷ Attendance</button>
+        <button class="nav-link" data-page="performance">▥ Performance</button>
+        <button class="nav-link" data-page="courses">▣ Courses</button>
+        <button class="nav-link" data-page="exams">✎ Exams</button>
+        <button class="nav-link" data-page="fees">₹ Fees</button>
+        <button class="nav-link" data-page="parents">♧ Parents Portal</button>
+        <button class="nav-link" data-page="programs">▦ Programs</button>
+        <button class="nav-link" data-page="faculty">♙ Faculty</button>
+      </nav>
+
+      <div class="nav-heading account-heading">ACCOUNT</div>
+      <nav>
+        <button class="nav-link" data-page="profile">⚙ My Profile</button>
+        <button class="nav-link logout-link" id="logoutBtn">⇥ Logout</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="status-dot"></span> Demo portal active
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">☰</button>
+        <div>
+          <h2 id="pageHeading">Dashboard</h2>
+          <p id="pageSubheading">Student management at a glance</p>
+        </div>
+        <div class="user-summary">
+          <div class="avatar" id="userAvatar">A</div>
+          <div>
+            <strong id="userName">Administrator</strong>
+            <p id="userRole">Admin</p>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-area">
+
+        <section class="welcome-banner">
+          <div>
+            <p class="eyebrow">LACHOO MEMORIAL COLLEGE OF SCIENCE AND TECHNOLOGY</p>
+            <h1>Student Information Page</h1>
+            <p>Manage all student records, academic activities and college information.</p>
+          </div>
+          <div class="banner-symbol">🎓</div>
+        </section>
+
+        <div id="pageContent"></div>
+
+        <footer>
+          <p>© 2026 Lachoo Memorial College — Student ERP Demonstration</p>
+          <p>Fictional data • Independent student project • Not an official college portal</p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- STUDENT FORM -->
+  <div id="studentModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-heading">
+        <h2 id="modalTitle">Add Student</h2>
+        <button id="closeModal" class="icon-btn" type="button">✕</button>
+      </div>
+
+      <form id="studentForm">
+        <input type="hidden" id="editStudentId">
+
+        <label for="studentName">Student Name</label>
+        <input id="studentName" required maxlength="80">
+
+        <label for="studentCourse">Course</label>
+        <select id="studentCourse">
+          <option>BCA</option>
+          <option>BBA</option>
+          <option>B.Com</option>
+          <option>B.Sc</option>
+          <option>BA</option>
+          <option>MCA</option>
+        </select>
+
+        <label for="studentParent">Parent/Guardian Name</label>
+        <input id="studentParent" required maxlength="80">
+
+        <div class="form-row">
+          <div>
+            <label for="studentAttendance">Attendance %</label>
+            <input id="studentAttendance" type="number" min="0" max="100"
+                   value="85" required>
+          </div>
+          <div>
+            <label for="studentMarks">Performance %</label>
+            <input id="studentMarks" type="number" min="0" max="100"
+                   value="75" required>
+          </div>
+        </div>
+
+        <label for="studentFee">Total Fee (₹)</label>
+        <input id="studentFee" type="number" min="0" value="40000" required>
+
+        <button type="submit" class="primary-btn full-width">Save Student Record</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
