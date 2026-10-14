@@ -603,3 +603,4 @@ document.getElementById("todayDate").textContent =
 document.getElementById("year").textContent = new Date().getFullYear();
 
 renderAll();
+
