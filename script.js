@@ -1,606 +1,556 @@
 
-"use strict";
+const $ = id => document.getElementById(id);
 
-/* ==========================================
-   LACHOO STUDENT INFORMATION SYSTEM
-   Front-end demonstration with browser storage
-========================================== */
-
-const STORAGE_KEY = "lachoo_erp_students_v2";
-
-const sampleStudents = [
-  { id: "s1", roll: "BCA24001", name: "Aarav Sharma", course: "BCA", year: "3rd Year", parent: "Rajesh Sharma", phone: "9000000001", attendance: 92, marks: 86, fees: "Paid" },
-  { id: "s2", roll: "BCA24002", name: "Aditi Verma", course: "BCA", year: "3rd Year", parent: "Sunita Verma", phone: "9000000002", attendance: 88, marks: 91, fees: "Paid" },
-  { id: "s3", roll: "BBA25001", name: "Rohan Mehta", course: "BBA", year: "2nd Year", parent: "Suresh Mehta", phone: "9000000003", attendance: 78, marks: 74, fees: "Pending" },
-  { id: "s4", roll: "BCOM25001", name: "Priya Joshi", course: "BCOM", year: "2nd Year", parent: "Manoj Joshi", phone: "9000000004", attendance: 95, marks: 89, fees: "Paid" },
-  { id: "s5", roll: "BA26001", name: "Karan Singh", course: "BA", year: "1st Year", parent: "Vikram Singh", phone: "9000000005", attendance: 81, marks: 72, fees: "Partial" },
-  { id: "s6", roll: "BSC24001", name: "Neha Gupta", course: "BSC", year: "3rd Year", parent: "Anil Gupta", phone: "9000000006", attendance: 90, marks: 93, fees: "Paid" },
-  { id: "s7", roll: "BCA25003", name: "Ishita Patel", course: "BCA", year: "2nd Year", parent: "Deepak Patel", phone: "9000000007", attendance: 85, marks: 82, fees: "Pending" },
-  { id: "s8", roll: "BBA26002", name: "Arjun Kapoor", course: "BBA", year: "1st Year", parent: "Pooja Kapoor", phone: "9000000008", attendance: 87, marks: 79, fees: "Paid" },
-  { id: "s9", roll: "MCA26001", name: "Meera Shah", course: "MCA", year: "1st Year", parent: "Nitin Shah", phone: "9000000009", attendance: 94, marks: 90, fees: "Paid" },
-  { id: "s10", roll: "BCOM24002", name: "Kabir Jain", course: "BCOM", year: "3rd Year", parent: "Amit Jain", phone: "9000000010", attendance: 76, marks: 68, fees: "Partial" }
+const courses = [
+  { name: "BCA", department: "Computer Applications", duration: "3 years", fee: 47600 },
+  { name: "BBA", department: "Management", duration: "3 years", fee: 45000 },
+  { name: "B.Sc.", department: "Science", duration: "3 years", fee: 42000 },
+  { name: "B.Com.", department: "Commerce", duration: "3 years", fee: 38000 },
+  { name: "BA", department: "Arts", duration: "3 years", fee: 32000 },
+  { name: "MCA", department: "Computer Applications", duration: "2 years", fee: 65000 }
 ];
 
-const courseInfo = [
-  { name: "BCA", title: "Bachelor of Computer Applications", icon: "💻", description: "Computer applications, programming, databases and web development." },
-  { name: "BBA", title: "Bachelor of Business Administration", icon: "📊", description: "Business management, marketing, finance and organisational studies." },
-  { name: "BCOM", title: "Bachelor of Commerce", icon: "📈", description: "Commerce, accounting, economics and business studies." },
-  { name: "BA", title: "Bachelor of Arts", icon: "📚", description: "Humanities, languages and social sciences." },
-  { name: "BSC", title: "Bachelor of Science", icon: "🔬", description: "Scientific subjects and practical learning." },
-  { name: "MCA", title: "Master of Computer Applications", icon: "🖥️", description: "Advanced computing and software development." },
-  { name: "MBA", title: "Master of Business Administration", icon: "💼", description: "Advanced management and business strategy." },
-  { name: "MSC", title: "Master of Science", icon: "🧪", description: "Advanced study in scientific disciplines." }
+const firstNames = [
+  "Aarav","Ananya","Vivaan","Diya","Arjun","Ishita","Rohan","Meera",
+  "Aditya","Kavya","Krishna","Aditi","Reyansh","Saanvi","Kabir",
+  "Nisha","Dev","Tanya","Rahul","Pooja","Yash","Khushi","Manav",
+  "Riya","Kunal","Simran","Harsh","Ira","Mohit","Priya"
+];
+const lastNames = [
+  "Sharma","Verma","Singh","Joshi","Mehta","Bhandari","Choudhary",
+  "Patel","Gupta","Rathore","Agarwal","Khan","Soni","Pareek",
+  "Jain","Yadav","Das","Kapoor","Bisht","Arora","Malhotra",
+  "Goyal","Tanwar","Mishra","Kumari","Bansal","Purohit","Saxena",
+  "Shekhawat","Vyas"
 ];
 
-const faculty = [
-  { id: "F001", name: "Dr. Rahul Sharma", department: "Computer Applications" },
-  { id: "F002", name: "Prof. Priya Mehta", department: "Commerce" },
-  { id: "F003", name: "Dr. Neha Kapoor", department: "Science" },
-  { id: "F004", name: "Prof. Arjun Verma", department: "Management" },
-  { id: "F005", name: "Dr. Anjali Singh", department: "Humanities" }
+const departments = [
+  "Computer Applications","Management","Science","Commerce","Arts",
+  "Mathematics","English","Physics","Chemistry","Computer Science"
+];
+const facultyFirst = [
+  "Amit","Sunita","Rajesh","Neha","Vikram","Kavita","Sanjay","Anjali",
+  "Deepak","Poonam","Manoj","Ritu","Ashok","Nidhi","Prakash",
+  "Seema","Rakesh","Meenakshi","Arvind","Swati"
+];
+const facultyLast = [
+  "Sharma","Mehta","Joshi","Verma","Singh","Gupta","Bhandari","Rathore"
 ];
 
-let students = loadStudents();
-let toastTimer;
+const makeInitialStudents = () => firstNames.map((first, i) => ({
+  id: i + 1,
+  name: `${first} ${lastNames[i]}`,
+  roll: `LMC${String(1001 + i)}`,
+  email: `${first.toLowerCase()}.${lastNames[i].toLowerCase()}${i + 1}@example.com`,
+  course: ["BCA","BBA","B.Sc.","B.Com.","BA"][i % 5],
+  semester: (i % 6) + 1,
+  date: `202${i % 4}-07-${String((i % 27) + 1).padStart(2,"0")}`,
+  fee: [47600,45000,42000,38000,32000][i % 5],
+  feeStatus: i % 3 === 0 ? "Pending" : i % 7 === 0 ? "Partial" : "Paid",
+  attendance: 65 + ((i * 7) % 35),
+  marks: 55 + ((i * 11) % 44)
+}));
 
-function loadStudents() {
+const makeInitialFaculty = () => Array.from({length: 40}, (_, i) => ({
+  id: i + 1,
+  name: `${facultyFirst[i % 20]} ${facultyLast[(i * 3) % 8]}`,
+  department: departments[i % departments.length],
+  designation: ["Assistant Professor","Associate Professor","Professor","Lecturer"][i % 4],
+  email: `faculty${String(i + 1).padStart(2,"0")}@example.com`
+}));
+
+function readSaved(key, fallback) {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved !== null) {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) return parsed;
-    }
-  } catch (error) {
-    console.warn("Could not read saved student records.", error);
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : fallback;
+  } catch {
+    return fallback;
   }
-
-  return sampleStudents.map(student => ({ ...student }));
 }
 
-function saveStudents() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
-    return true;
-  } catch (error) {
-    console.error("Could not save student records.", error);
-    showToast("Could not save data. Check browser storage settings.");
-    return false;
-  }
+let students = readSaved("lachooStudents", makeInitialStudents());
+let faculty = readSaved("lachooFaculty", makeInitialFaculty());
+let nextId = Math.max(0, ...students.map(s => Number(s.id) || 0)) + 1;
+let role = "guest";
+let currentPage = "dashboard";
+
+function saveData() {
+  localStorage.setItem("lachooStudents", JSON.stringify(students));
+  localStorage.setItem("lachooFaculty", JSON.stringify(faculty));
 }
 
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[ch]);
 }
 
-function initials(name) {
-  return String(name || "?")
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(part => part.charAt(0))
-    .join("")
-    .toUpperCase();
+function money(value) {
+  return "₹" + Number(value || 0).toLocaleString("en-IN");
 }
 
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(() => el.style.display = "none", 2800);
 }
 
-function formatAttendance(value) {
-  return `${Number(value) || 0}%`;
+$("loginRole").addEventListener("change", () => {
+  $("adminCredentials").classList.toggle(
+    "hidden", $("loginRole").value !== "admin"
+  );
+});
+
+function login() {
+  const selectedRole = $("loginRole").value;
+  if (selectedRole === "admin") {
+    if ($("username").value !== "admin" ||
+        $("password").value !== "Lachoo@123") {
+      alert("Incorrect demo credentials. Please try again.");
+      return;
+    }
+  }
+  role = selectedRole;
+  $("loginScreen").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("roleLabel").textContent = role === "admin"
+    ? "Administrator access" : "Guest · View only";
+  $("userBadge").textContent = role === "admin" ? "Admin" : "Guest";
+  renderPage("dashboard");
 }
 
-function feeBadge(status) {
-  const safeStatus = ["Paid", "Pending", "Partial"].includes(status)
-    ? status
-    : "Pending";
-
-  return `<span class="status ${safeStatus.toLowerCase()}">${safeStatus}</span>`;
+function logout() {
+  role = "guest";
+  $("app").classList.add("hidden");
+  $("loginScreen").classList.remove("hidden");
+  $("username").value = "";
+  $("password").value = "";
+  $("loginRole").value = "guest";
+  $("adminCredentials").classList.add("hidden");
 }
 
-function studentDetailsCell(student) {
+document.querySelectorAll(".nav-item").forEach(button => {
+  button.addEventListener("click", () => renderPage(button.dataset.page));
+});
+
+function renderPage(page) {
+  currentPage = page;
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === page);
+  });
+  const titles = {
+    dashboard:"Dashboard", students:"Student Management",
+    faculty:"Faculty Members", courses:"Courses",
+    admissions:"Admissions", fees:"Fees Management",
+    attendance:"Attendance", marks:"Marks & Results",
+    about:"About the College"
+  };
+  $("pageTitle").textContent = titles[page] || "Dashboard";
+  const pages = {
+    dashboard:dashboardPage,
+    students:studentsPage,
+    faculty:facultyPage,
+    courses:coursesPage,
+    admissions:admissionsPage,
+    fees:feesPage,
+    attendance:attendancePage,
+    marks:marksPage,
+    about:aboutPage
+  };
+  $("pageContent").innerHTML = (pages[page] || dashboardPage)();
+}
+
+function statCard(label, value, note) {
+  return `<div class="stat"><span>${label}</span><h2>${value}</h2><small>${note}</small></div>`;
+}
+
+function dashboardPage() {
+  const paid = students.filter(s => s.feeStatus === "Paid").length;
+  const pending = students.filter(s => s.feeStatus === "Pending").length;
+  const feeCollected = students.reduce((sum, s) =>
+    sum + (s.feeStatus === "Paid" ? Number(s.fee) :
+      s.feeStatus === "Partial" ? Number(s.fee) / 2 : 0), 0);
+  const averageAttendance = students.length
+    ? Math.round(students.reduce((sum,s) => sum + Number(s.attendance),0) / students.length)
+    : 0;
+
   return `
-    <div class="student-cell">
-      <div class="avatar">${escapeHTML(initials(student.name))}</div>
-      <div>
-        <strong>${escapeHTML(student.name)}</strong>
-        <small>${escapeHTML(student.phone || "No phone provided")}</small>
+    <div class="welcome">
+      <h2>Welcome to Lachoo College Portal</h2>
+      <p>Manage student records, faculty, admissions, fees and academic performance from one dashboard. All records are fictional demonstration data.</p>
+    </div>
+    <div class="stats">
+      ${statCard("Total Students", students.length, "Student records")}
+      ${statCard("Faculty Members", faculty.length, "Faculty directory")}
+      ${statCard("Fees Paid", paid, "Students marked paid")}
+      ${statCard("Fees Pending", pending, "Students marked pending")}
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="section-title"><h2>Academic Overview</h2></div>
+        <div class="info-line"><span>Courses offered</span><strong>${courses.length}</strong></div>
+        <div class="info-line"><span>Average attendance</span><strong>${averageAttendance}%</strong></div>
+        <div class="info-line"><span>Fees recorded as collected</span><strong>${money(feeCollected)}</strong></div>
+        <div class="info-line"><span>Students with partial fees</span><strong>${students.filter(s => s.feeStatus === "Partial").length}</strong></div>
       </div>
+      <div class="panel">
+        <div class="section-title"><h2>Quick Actions</h2></div>
+        <p class="hint">Use these shortcuts to navigate the portal.</p>
+        <div class="toolbar">
+          <button class="primary" onclick="renderPage('students')">View Students</button>
+          <button class="secondary" onclick="renderPage('faculty')">View Faculty</button>
+          <button class="secondary" onclick="renderPage('fees')">Check Fees</button>
+          <button class="secondary" onclick="renderPage('about')">College Profile</button>
+        </div>
+        <p class="hint">${role === "admin" ? "Administrator mode: you can manage student records." : "Guest mode: records are view-only. Log in as admin to edit student records."}</p>
+      </div>
+    </div>
+    <div class="section-title"><h2>Recently Listed Students</h2><button class="secondary" onclick="renderPage('students')">View All</button></div>
+    ${studentTable(students.slice(0,5), false)}
+  `;
+}
+
+function studentTable(list, allowActions = true) {
+  if (!list.length) return `<div class="panel empty">No student records found.</div>`;
+  return `<div class="panel table-wrap"><table>
+    <thead><tr>
+      <th>Roll No.</th><th>Student Name</th><th>Course</th>
+      <th>Semester</th><th>Fee Status</th><th>Marks</th>
+      ${allowActions && role === "admin" ? "<th>Actions</th>" : ""}
+    </tr></thead><tbody>
+    ${list.map(s => `<tr>
+      <td>${escapeHTML(s.roll)}</td>
+      <td><strong>${escapeHTML(s.name)}</strong><br><span class="hint">${escapeHTML(s.email)}</span></td>
+      <td>${escapeHTML(s.course)}</td><td>${escapeHTML(s.semester)}</td>
+      <td><span class="pill ${s.feeStatus.toLowerCase()}">${escapeHTML(s.feeStatus)}</span></td>
+      <td>${escapeHTML(s.marks)}%</td>
+      ${allowActions && role === "admin" ? `<td><div class="actions">
+        <button class="secondary" onclick="editStudent(${Number(s.id)})">Edit</button>
+        <button class="danger" onclick="deleteStudent(${Number(s.id)})">Delete</button>
+      </div></td>` : ""}
+    </tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+function studentsPage() {
+  return `
+    <div class="section-title"><h2>Student Directory</h2>
+    ${role === "admin" ? `<button class="primary" onclick="openStudentForm()">+ Add Student</button>` : ""}
+    </div>
+    <div class="panel">
+      <div class="toolbar">
+        <input id="studentSearch" placeholder="Search name, roll number or email..." oninput="filterStudents()">
+        <select id="courseFilter" onchange="filterStudents()">
+          <option value="">All courses</option>
+          ${courses.map(c => `<option>${c.name}</option>`).join("")}
+        </select>
+        <select id="feeFilter" onchange="filterStudents()">
+          <option value="">All fee statuses</option>
+          <option>Paid</option><option>Pending</option><option>Partial</option>
+        </select>
+        <button class="secondary" onclick="exportStudents()">Export CSV</button>
+      </div>
+      <div id="studentResults">${studentTable(students)}</div>
+      <p class="hint">Total records: <strong id="studentCount">${students.length}</strong>. Export downloads the current student dataset.</p>
     </div>`;
 }
 
-function emptyRow(columns, message = "No records found.") {
-  return `<tr><td class="empty-row" colspan="${columns}">${escapeHTML(message)}</td></tr>`;
-}
-
-/* -------------------------------
-   Navigation
--------------------------------- */
-
-function showPage(pageId) {
-  const target = document.getElementById(pageId);
-  if (!target || !target.classList.contains("page")) return;
-
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.toggle("active", page.id === pageId);
-  });
-
-  document.querySelectorAll(".nav-link").forEach(button => {
-    button.classList.toggle("active", button.dataset.page === pageId);
-  });
-
-  const activeButton = document.querySelector(
-    `.nav-link[data-page="${pageId}"]`
+function filterStudents() {
+  const search = ($("studentSearch")?.value || "").toLowerCase();
+  const course = $("courseFilter")?.value || "";
+  const fee = $("feeFilter")?.value || "";
+  const filtered = students.filter(s =>
+    [s.name,s.roll,s.email].some(v => String(v).toLowerCase().includes(search)) &&
+    (!course || s.course === course) && (!fee || s.feeStatus === fee)
   );
-
-  document.getElementById("pageTitle").textContent =
-    activeButton ? activeButton.textContent.trim().replace(/^[^\w]+/, "") :
-    pageId.charAt(0).toUpperCase() + pageId.slice(1);
-
-  document.getElementById("sidebar").classList.remove("open");
-
-  renderAll();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  $("studentResults").innerHTML = studentTable(filtered);
+  $("studentCount").textContent = filtered.length;
 }
 
-document.querySelectorAll(".nav-link").forEach(button => {
-  button.addEventListener("click", () => showPage(button.dataset.page));
-});
-
-document.querySelectorAll("[data-go]").forEach(button => {
-  button.addEventListener("click", () => showPage(button.dataset.go));
-});
-
-document.getElementById("menuBtn").addEventListener("click", () => {
-  document.getElementById("sidebar").classList.toggle("open");
-});
-
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  showToast("This demo has no secure login session to end.");
-});
-
-/* -------------------------------
-   Student modal
--------------------------------- */
-
-const modal = document.getElementById("studentModal");
-const studentForm = document.getElementById("studentForm");
-
-function openStudentModal(student = null) {
-  studentForm.reset();
-  document.getElementById("formError").textContent = "";
-  document.getElementById("editId").value = student ? student.id : "";
-  document.getElementById("modalTitle").textContent =
-    student ? "Edit Student" : "Add Student";
-  document.getElementById("saveStudentBtn").textContent =
-    student ? "Update Student" : "Save Student";
-
-  if (student) {
-    document.getElementById("studentName").value = student.name || "";
-    document.getElementById("rollNumber").value = student.roll || "";
-    document.getElementById("studentCourse").value = student.course || "";
-    document.getElementById("studentYear").value = student.year || "";
-    document.getElementById("parentName").value = student.parent || "";
-    document.getElementById("studentPhone").value = student.phone || "";
-    document.getElementById("studentAttendance").value = student.attendance ?? 0;
-    document.getElementById("studentMarks").value = student.marks ?? 0;
-    document.getElementById("studentFees").value = student.fees || "Pending";
-
-    // Keep a previously saved course available if it is not in the preset list.
-    const courseSelect = document.getElementById("studentCourse");
-    if (![...courseSelect.options].some(option => option.value === student.course)) {
-      const option = document.createElement("option");
-      option.value = student.course;
-      option.textContent = student.course;
-      courseSelect.add(option);
-      courseSelect.value = student.course;
-    }
+function openStudentForm(id = null) {
+  if (role !== "admin") return toast("Admin access is required.");
+  $("studentForm").reset();
+  $("editId").value = "";
+  $("modalTitle").textContent = "Add New Student";
+  $("studentCourse").innerHTML = courses.map(c =>
+    `<option value="${c.name}">${c.name}</option>`).join("");
+  $("studentDate").value = new Date().toISOString().slice(0,10);
+  $("studentFee").value = 47600;
+  $("studentAttendance").value = 90;
+  $("studentMarks").value = 75;
+  if (id !== null) {
+    const s = students.find(item => item.id === id);
+    if (!s) return;
+    $("modalTitle").textContent = "Edit Student";
+    $("editId").value = s.id;
+    $("studentName").value = s.name;
+    $("studentRoll").value = s.roll;
+    $("studentEmail").value = s.email;
+    $("studentCourse").value = s.course;
+    $("studentSemester").value = s.semester;
+    $("studentDate").value = s.date;
+    $("studentFee").value = s.fee;
+    $("studentFeeStatus").value = s.feeStatus;
+    $("studentAttendance").value = s.attendance;
+    $("studentMarks").value = s.marks;
   }
-
-  modal.hidden = false;
-  document.body.style.overflow = "hidden";
-  document.getElementById("studentName").focus();
+  $("modal").classList.remove("hidden");
 }
+function editStudent(id) { openStudentForm(id); }
+function closeModal() { $("modal").classList.add("hidden"); }
 
-function closeStudentModal() {
-  modal.hidden = true;
-  document.body.style.overflow = "";
-  studentForm.reset();
-  document.getElementById("formError").textContent = "";
-}
-
-document.getElementById("addStudentBtn").addEventListener("click", () => {
-  openStudentModal();
-});
-
-document.getElementById("closeModal").addEventListener("click", closeStudentModal);
-document.getElementById("cancelModal").addEventListener("click", closeStudentModal);
-
-modal.addEventListener("click", event => {
-  if (event.target === modal) closeStudentModal();
-});
-
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape" && !modal.hidden) closeStudentModal();
-});
-
-/* -------------------------------
-   Add and edit student records
--------------------------------- */
-
-studentForm.addEventListener("submit", event => {
+$("studentForm").addEventListener("submit", event => {
   event.preventDefault();
+  if (role !== "admin") return toast("Admin access is required.");
 
-  const errorBox = document.getElementById("formError");
-  errorBox.textContent = "";
+  const id = $("editId").value;
+  const roll = $("studentRoll").value.trim();
+  const duplicate = students.some(s => s.roll.toLowerCase() === roll.toLowerCase() && String(s.id) !== id);
+  if (duplicate) return alert("This roll number already exists.");
 
-  const editId = document.getElementById("editId").value;
-  const name = document.getElementById("studentName").value.trim();
-  const roll = document.getElementById("rollNumber").value.trim();
-  const course = document.getElementById("studentCourse").value;
-  const year = document.getElementById("studentYear").value;
-  const parent = document.getElementById("parentName").value.trim();
-  const phone = document.getElementById("studentPhone").value.trim();
-  const attendance = Number(document.getElementById("studentAttendance").value);
-  const marks = Number(document.getElementById("studentMarks").value);
-  const fees = document.getElementById("studentFees").value;
-
-  if (!name || !roll || !course || !year) {
-    errorBox.textContent = "Please complete all required fields.";
-    return;
-  }
-
-  if (!Number.isFinite(attendance) || attendance < 0 || attendance > 100) {
-    errorBox.textContent = "Attendance must be between 0 and 100.";
-    return;
-  }
-
-  if (!Number.isFinite(marks) || marks < 0 || marks > 100) {
-    errorBox.textContent = "Marks must be between 0 and 100.";
-    return;
-  }
-
-  const duplicateRoll = students.some(student =>
-    student.roll.toLowerCase() === roll.toLowerCase() &&
-    student.id !== editId
-  );
-
-  if (duplicateRoll) {
-    errorBox.textContent = "That roll number already exists. Please use a unique roll number.";
-    return;
-  }
-
-  const studentData = {
-    id: editId || (
-      typeof crypto !== "undefined" && crypto.randomUUID
-        ? crypto.randomUUID()
-        : `student-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-    ),
-    name,
+  const record = {
+    id: id ? Number(id) : nextId++,
+    name: $("studentName").value.trim(),
     roll,
-    course,
-    year,
-    parent,
-    phone,
-    attendance,
-    marks,
-    fees
+    email: $("studentEmail").value.trim(),
+    course: $("studentCourse").value,
+    semester: Number($("studentSemester").value),
+    date: $("studentDate").value,
+    fee: Number($("studentFee").value),
+    feeStatus: $("studentFeeStatus").value,
+    attendance: Number($("studentAttendance").value),
+    marks: Number($("studentMarks").value)
   };
-
-  const previousStudents = students.map(student => ({ ...student }));
-
-  if (editId) {
-    const index = students.findIndex(student => student.id === editId);
-    if (index === -1) {
-      errorBox.textContent = "This student record could not be found.";
-      return;
-    }
-    students[index] = studentData;
-  } else {
-    students.unshift(studentData);
+  if (!record.name || !record.roll || !record.date ||
+      record.fee < 0 || record.attendance < 0 || record.attendance > 100 ||
+      record.marks < 0 || record.marks > 100) {
+    return alert("Please check all fields and numeric ranges.");
   }
 
-  if (!saveStudents()) {
-    students = previousStudents;
-    renderAll();
-    errorBox.textContent = "The record could not be saved in browser storage.";
-    return;
-  }
+  if (id) students = students.map(s => s.id === Number(id) ? record : s);
+  else students.push(record);
 
-  closeStudentModal();
-  renderAll();
-  showPage("students");
-  showToast(editId ? "Student updated successfully." : "Student added successfully.");
+  saveData();
+  closeModal();
+  renderPage("students");
+  toast(id ? "Student record updated." : "Student added successfully.");
 });
 
-/* -------------------------------
-   Search and course filter
--------------------------------- */
-
-const searchInput = document.getElementById("studentSearch");
-const courseFilter = document.getElementById("courseFilter");
-
-function getFilteredStudents() {
-  const query = searchInput.value.trim().toLowerCase();
-  const selectedCourse = courseFilter.value;
-
-  return students.filter(student => {
-    const matchesQuery = [
-      student.name,
-      student.roll,
-      student.course,
-      student.parent,
-      student.phone
-    ].some(value => String(value || "").toLowerCase().includes(query));
-
-    const matchesCourse = !selectedCourse || student.course === selectedCourse;
-    return matchesQuery && matchesCourse;
-  });
+function deleteStudent(id) {
+  if (role !== "admin") return toast("Admin access is required.");
+  const student = students.find(s => s.id === id);
+  if (!student) return;
+  if (!confirm(`Delete the record for ${student.name}?`)) return;
+  students = students.filter(s => s.id !== id);
+  saveData();
+  renderPage("students");
+  toast("Student record deleted.");
 }
 
-searchInput.addEventListener("input", renderStudentTable);
-courseFilter.addEventListener("change", renderStudentTable);
-
-document.getElementById("clearSearch").addEventListener("click", () => {
-  searchInput.value = "";
-  courseFilter.value = "";
-  renderStudentTable();
-  searchInput.focus();
-});
-
-/* -------------------------------
-   Student table and actions
--------------------------------- */
-
-function renderStudentTable() {
-  const table = document.getElementById("studentsTable");
-  const filtered = getFilteredStudents();
-
-  if (!filtered.length) {
-    table.innerHTML = emptyRow(7, "No students match your search. Try another name or roll number.");
-  } else {
-    table.innerHTML = filtered.map(student => `
-      <tr>
-        <td class="roll">${escapeHTML(student.roll)}</td>
-        <td>${studentDetailsCell(student)}</td>
-        <td>${escapeHTML(student.course)}</td>
-        <td>${escapeHTML(student.year)}</td>
-        <td>${formatAttendance(student.attendance)}</td>
-        <td>${feeBadge(student.fees)}</td>
-        <td>
-          <div class="action-group">
-            <button class="icon-btn" data-action="view" data-id="${escapeHTML(student.id)}" title="View student">View</button>
-            <button class="icon-btn" data-action="edit" data-id="${escapeHTML(student.id)}" title="Edit student">Edit</button>
-            <button class="icon-btn delete" data-action="delete" data-id="${escapeHTML(student.id)}" title="Delete student">Delete</button>
-          </div>
-        </td>
-      </tr>
-    `).join("");
-  }
-
-  document.getElementById("resultsCount").textContent =
-    `Showing ${filtered.length} of ${students.length} students`;
+function exportStudents() {
+  const headers = ["Roll No","Name","Email","Course","Semester","Fee","Fee Status","Attendance","Marks"];
+  const rows = students.map(s => [s.roll,s.name,s.email,s.course,s.semester,s.fee,s.feeStatus,s.attendance,s.marks]);
+  const csv = [headers,...rows].map(row =>
+    row.map(v => `"${String(v ?? "").replace(/"/g,'""')}"`).join(",")
+  ).join("\r\n");
+  const blob = new Blob(["\uFEFF" + csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "lachoo-students.csv";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-document.getElementById("studentsTable").addEventListener("click", event => {
-  const button = event.target.closest("button[data-action]");
-  if (!button) return;
-
-  const student = students.find(item => item.id === button.dataset.id);
-  if (!student) {
-    showToast("Student record not found.");
-    return;
-  }
-
-  const action = button.dataset.action;
-
-  if (action === "edit") {
-    openStudentModal(student);
-  } else if (action === "view") {
-    alert(
-      `STUDENT DETAILS\n\n` +
-      `Name: ${student.name}\n` +
-      `Roll Number: ${student.roll}\n` +
-      `Course: ${student.course}\n` +
-      `Academic Year: ${student.year}\n` +
-      `Parent/Guardian: ${student.parent || "Not provided"}\n` +
-      `Phone: ${student.phone || "Not provided"}\n` +
-      `Attendance: ${student.attendance}%\n` +
-      `Marks: ${student.marks}%\n` +
-      `Fee Status: ${student.fees}`
-    );
-  } else if (action === "delete") {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${student.name} (${student.roll})?\n\nThis action cannot be undone.`
-    );
-
-    if (!confirmed) return;
-
-    const previousStudents = students;
-    students = students.filter(item => item.id !== student.id);
-
-    if (!saveStudents()) {
-      students = previousStudents;
-      renderAll();
-      return;
-    }
-
-    renderAll();
-    showToast("Student record deleted.");
-  }
-});
-
-/* -------------------------------
-   Render related tables
--------------------------------- */
-
-function renderRecentStudents() {
-  const tbody = document.getElementById("recentStudents");
-  const recent = [...students].slice(0, 5);
-
-  tbody.innerHTML = recent.length ? recent.map(student => `
-    <tr>
-      <td class="roll">${escapeHTML(student.roll)}</td>
-      <td>${studentDetailsCell(student)}</td>
-      <td>${escapeHTML(student.course)}</td>
-      <td>${escapeHTML(student.year)}</td>
-      <td>${feeBadge(student.fees)}</td>
-    </tr>
-  `).join("") : emptyRow(5, "No student records yet.");
+function facultyPage() {
+  return `
+    <div class="section-title"><h2>Faculty Directory</h2><span class="pill partial">${faculty.length} Members</span></div>
+    <div class="panel">
+      <div class="toolbar"><input id="facultySearch" placeholder="Search faculty or department..." oninput="filterFaculty()"></div>
+      <div id="facultyResults">${facultyTable(faculty)}</div>
+    </div>`;
 }
 
-function renderAttendance() {
-  const tbody = document.getElementById("attendanceTable");
-  tbody.innerHTML = students.length ? students.map(student => `
-    <tr>
-      <td class="roll">${escapeHTML(student.roll)}</td>
-      <td>${escapeHTML(student.name)}</td>
-      <td>${escapeHTML(student.course)}</td>
-      <td>${formatAttendance(student.attendance)}</td>
-    </tr>
-  `).join("") : emptyRow(4);
+function facultyTable(list) {
+  if (!list.length) return `<div class="empty">No faculty found.</div>`;
+  return `<div class="table-wrap"><table><thead><tr>
+    <th>ID</th><th>Faculty Name</th><th>Department</th><th>Designation</th><th>Email</th>
+    </tr></thead><tbody>${list.map(f => `<tr>
+      <td>F${String(f.id).padStart(3,"0")}</td><td>${escapeHTML(f.name)}</td>
+      <td>${escapeHTML(f.department)}</td><td>${escapeHTML(f.designation)}</td>
+      <td>${escapeHTML(f.email)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function filterFaculty() {
+  const q = $("facultySearch").value.toLowerCase();
+  $("facultyResults").innerHTML = facultyTable(faculty.filter(f =>
+    `${f.name} ${f.department} ${f.designation}`.toLowerCase().includes(q)
+  ));
 }
 
-function renderPerformance() {
-  const tbody = document.getElementById("performanceTable");
-  tbody.innerHTML = students.length ? students.map(student => `
-    <tr>
-      <td class="roll">${escapeHTML(student.roll)}</td>
-      <td>${escapeHTML(student.name)}</td>
-      <td>${escapeHTML(student.course)}</td>
-      <td>${Number(student.marks) || 0}%</td>
-      <td>${formatAttendance(student.attendance)}</td>
-    </tr>
-  `).join("") : emptyRow(5);
+function coursesPage() {
+  return `<div class="section-title"><h2>Academic Courses</h2></div>
+    <div class="grid-3">${courses.map(c => `<div class="info-card">
+      <h3>${escapeHTML(c.name)}</h3><p>${escapeHTML(c.department)}</p>
+      <div class="info-line"><span>Duration</span><strong>${c.duration}</strong></div>
+      <div class="info-line"><span>Illustrative annual fee</span><strong>${money(c.fee)}</strong></div>
+      <div class="info-line"><span>Enrolled students</span><strong>${students.filter(s => s.course === c.name).length}</strong></div>
+    </div>`).join("")}</div>
+    <p class="hint">Courses and fee amounts are sample data and are not an official fee schedule.</p>`;
 }
 
-function renderFees() {
-  const tbody = document.getElementById("feesTable");
-  tbody.innerHTML = students.length ? students.map(student => `
-    <tr>
-      <td class="roll">${escapeHTML(student.roll)}</td>
-      <td>${escapeHTML(student.name)}</td>
-      <td>${escapeHTML(student.course)}</td>
-      <td>${feeBadge(student.fees)}</td>
-    </tr>
-  `).join("") : emptyRow(4);
+function admissionsPage() {
+  return `<div class="section-title"><h2>Admission Records</h2></div>
+    <div class="panel">
+      <div class="toolbar"><input id="admissionSearch" placeholder="Search student or course..." oninput="filterAdmissions()"></div>
+      <div id="admissionResults">${admissionTable(students)}</div>
+    </div>`;
+}
+function admissionTable(list) {
+  if (!list.length) return `<div class="empty">No admissions found.</div>`;
+  return `<div class="table-wrap"><table><thead><tr>
+    <th>Roll Number</th><th>Student</th><th>Course</th><th>Semester</th><th>Admission Date</th>
+    </tr></thead><tbody>${list.map(s => `<tr>
+    <td>${escapeHTML(s.roll)}</td><td>${escapeHTML(s.name)}</td>
+    <td>${escapeHTML(s.course)}</td><td>${escapeHTML(s.semester)}</td>
+    <td>${escapeHTML(s.date)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function filterAdmissions() {
+  const q = $("admissionSearch").value.toLowerCase();
+  $("admissionResults").innerHTML = admissionTable(students.filter(s =>
+    `${s.name} ${s.roll} ${s.course}`.toLowerCase().includes(q)
+  ));
 }
 
-function renderParents() {
-  const tbody = document.getElementById("parentsTable");
-  tbody.innerHTML = students.length ? students.map(student => `
-    <tr>
-      <td class="roll">${escapeHTML(student.roll)}</td>
-      <td>${escapeHTML(student.name)}</td>
-      <td>${escapeHTML(student.parent || "Not provided")}</td>
-      <td>${escapeHTML(student.phone || "Not provided")}</td>
-    </tr>
-  `).join("") : emptyRow(4);
+function feesPage() {
+  const paid = students.filter(s => s.feeStatus === "Paid");
+  const pending = students.filter(s => s.feeStatus === "Pending");
+  const partial = students.filter(s => s.feeStatus === "Partial");
+  const collected = students.reduce((sum,s) => sum +
+    (s.feeStatus === "Paid" ? s.fee : s.feeStatus === "Partial" ? s.fee/2 : 0), 0);
+  return `<div class="stats">
+    ${statCard("Paid",paid.length,"Students marked paid")}
+    ${statCard("Pending",pending.length,"Students marked pending")}
+    ${statCard("Partial",partial.length,"Students with partial fees")}
+    ${statCard("Recorded Collection",money(collected),"Estimated from demo statuses")}
+    </div>
+    <div class="section-title"><h2>Student Fee Register</h2></div>
+    <div class="panel"><div class="toolbar">
+    <input id="feeSearch" placeholder="Search name or roll number..." oninput="filterFees()">
+    <select id="feeStatusFilter" onchange="filterFees()"><option value="">All statuses</option><option>Paid</option><option>Pending</option><option>Partial</option></select>
+    </div><div id="feeResults">${feeTable(students)}</div></div>
+    <p class="hint">Collection is a demonstration estimate: partial fees are counted as half of the annual fee. Actual payments require a real payment system.</p>`;
+}
+function feeTable(list) {
+  if (!list.length) return `<div class="empty">No fee records found.</div>`;
+  return `<div class="table-wrap"><table><thead><tr>
+    <th>Roll No.</th><th>Student</th><th>Course</th><th>Annual Fee</th><th>Status</th>
+    </tr></thead><tbody>${list.map(s => `<tr>
+    <td>${escapeHTML(s.roll)}</td><td>${escapeHTML(s.name)}</td>
+    <td>${escapeHTML(s.course)}</td><td>${money(s.fee)}</td>
+    <td><span class="pill ${s.feeStatus.toLowerCase()}">${escapeHTML(s.feeStatus)}</span></td>
+    </tr>`).join("")}</tbody></table></div>`;
+}
+function filterFees() {
+  const q = $("feeSearch").value.toLowerCase();
+  const status = $("feeStatusFilter").value;
+  $("feeResults").innerHTML = feeTable(students.filter(s =>
+    `${s.name} ${s.roll}`.toLowerCase().includes(q) &&
+    (!status || s.feeStatus === status)
+  ));
 }
 
-function renderFaculty() {
-  document.getElementById("facultyTable").innerHTML = faculty.map(member => `
-    <tr>
-      <td class="roll">${escapeHTML(member.id)}</td>
-      <td>${escapeHTML(member.name)}</td>
-      <td>${escapeHTML(member.department)}</td>
-    </tr>
-  `).join("");
+function attendancePage() {
+  const average = students.length
+    ? Math.round(students.reduce((sum,s) => sum + Number(s.attendance),0) / students.length) : 0;
+  return `<div class="stats">
+    ${statCard("Average Attendance",average+"%","Across demo records")}
+    ${statCard("Above 75%",students.filter(s => s.attendance >= 75).length,"Students")}
+    ${statCard("Below 75%",students.filter(s => s.attendance < 75).length,"Students")}
+    ${statCard("Total Records",students.length,"Student attendance entries")}
+    </div><div class="section-title"><h2>Attendance Register</h2></div>
+    <div class="panel"><div class="toolbar"><input id="attendanceSearch" placeholder="Search student..." oninput="filterAttendance()"></div>
+    <div id="attendanceResults">${attendanceTable(students)}</div></div>
+    <p class="hint">Attendance percentages are fictional. This demonstration does not record individual daily attendance.</p>`;
+}
+function attendanceTable(list) {
+  if (!list.length) return `<div class="empty">No records found.</div>`;
+  return `<div class="table-wrap"><table><thead><tr><th>Roll No.</th><th>Student</th><th>Course</th><th>Attendance</th><th>Progress</th></tr></thead>
+  <tbody>${list.map(s => `<tr><td>${escapeHTML(s.roll)}</td><td>${escapeHTML(s.name)}</td>
+  <td>${escapeHTML(s.course)}</td><td>${s.attendance}%</td>
+  <td><div class="progress"><div style="width:${Math.max(0,Math.min(100,Number(s.attendance)))}%"></div></div></td>
+  </tr>`).join("")}</tbody></table></div>`;
+}
+function filterAttendance() {
+  const q = $("attendanceSearch").value.toLowerCase();
+  $("attendanceResults").innerHTML = attendanceTable(students.filter(s =>
+    `${s.name} ${s.roll}`.toLowerCase().includes(q)
+  ));
 }
 
-function renderCourses() {
-  const html = courseInfo.map(course => `
-    <article class="info-card">
-      <div class="course-icon">${course.icon}</div>
-      <h3>${escapeHTML(course.name)}</h3>
-      <p><strong>${escapeHTML(course.title)}</strong></p>
-      <p>${escapeHTML(course.description)}</p>
-      <p style="margin-top:12px">
-        Enrolled students: ${students.filter(student => student.course === course.name).length}
-      </p>
-    </article>
-  `).join("");
-
-  document.getElementById("coursesGrid").innerHTML = html;
-  document.getElementById("programsGrid").innerHTML = html;
+function marksPage() {
+  const avg = students.length ? Math.round(students.reduce((sum,s) => sum + Number(s.marks),0) / students.length) : 0;
+  return `<div class="stats">
+    ${statCard("Average Marks",avg+"%","Across demo records")}
+    ${statCard("90% and Above",students.filter(s => s.marks >= 90).length,"Students")}
+    ${statCard("Below 40%",students.filter(s => s.marks < 40).length,"Students")}
+    ${statCard("Results Listed",students.length,"Student records")}
+    </div><div class="section-title"><h2>Marks & Results Register</h2></div>
+    <div class="panel"><div class="toolbar"><input id="marksSearch" placeholder="Search student..." oninput="filterMarks()"></div>
+    <div id="marksResults">${marksTable(students)}</div></div>
+    <p class="hint">Marks are illustrative percentages, not official examination results.</p>`;
+}
+function marksTable(list) {
+  if (!list.length) return `<div class="empty">No marks found.</div>`;
+  return `<div class="table-wrap"><table><thead><tr><th>Roll No.</th><th>Student</th><th>Course</th><th>Marks</th><th>Illustrative result</th></tr></thead>
+  <tbody>${list.map(s => `<tr><td>${escapeHTML(s.roll)}</td><td>${escapeHTML(s.name)}</td>
+  <td>${escapeHTML(s.course)}</td><td>${s.marks}%</td>
+  <td><span class="pill ${s.marks >= 40 ? "paid" : "pending"}">${s.marks >= 40 ? "Pass" : "Needs Review"}</span></td>
+  </tr>`).join("")}</tbody></table></div>`;
+}
+function filterMarks() {
+  const q = $("marksSearch").value.toLowerCase();
+  $("marksResults").innerHTML = marksTable(students.filter(s =>
+    `${s.name} ${s.roll}`.toLowerCase().includes(q)
+  ));
 }
 
-function renderCourseFilter() {
-  const previousValue = courseFilter.value;
-  const courses = [...new Set([
-    ...courseInfo.map(course => course.name),
-    ...students.map(student => student.course)
-  ])].filter(Boolean).sort();
-
-  courseFilter.innerHTML =
-    '<option value="">All Courses</option>' +
-    courses.map(course =>
-      `<option value="${escapeHTML(course)}">${escapeHTML(course)}</option>`
-    ).join("");
-
-  if (courses.includes(previousValue)) courseFilter.value = previousValue;
+function aboutPage() {
+  const demoFaculty = [
+    ["Principal","Dr. Meera Sharma"],
+    ["Vice Principal","Dr. Rajesh Bhandari"],
+    ["Academic Coordinator","Dr. Kavita Joshi"]
+  ];
+  return `<div class="welcome">
+    <h2>Lachoo Memorial College of Science and Technology</h2>
+    <p>Autonomous college · Jodhpur, Rajasthan, India</p>
+  </div>
+  <div class="grid-2">
+    <div class="info-card"><h3>About the Institution</h3>
+      <p>This portal is a student-developed demonstration of an academic administration system inspired by the college name supplied for the project.</p>
+      <div class="info-line"><span>Location</span><strong>Jodhpur, Rajasthan</strong></div>
+      <div class="info-line"><span>Establishment year</span><strong>1965 (sample profile)</strong></div>
+      <div class="info-line"><span>Institution type</span><strong>Autonomous college (project profile)</strong></div>
+      <div class="info-line"><span>Website data</span><strong>Fictional demonstration</strong></div>
+    </div>
+    <div class="info-card"><h3>College Administration</h3>
+      ${demoFaculty.map(item => `<div class="info-line"><span>${item[0]}</span><strong>${item[1]}</strong></div>`).join("")}
+      <p>These names are placeholders for this software project and are not claims about current officeholders.</p>
+    </div>
+  </div>
+  <div class="section-title"><h2>Faculty Departments</h2></div>
+  <div class="grid-3">${departments.map((d,i) => `<div class="info-card">
+    <h3>${escapeHTML(d)}</h3><p>${faculty.filter(f => f.department === d).length} sample faculty members</p>
+  </div>`).join("")}</div>
+  <div class="section-title"><h2>Project Statistics</h2></div>
+  <div class="stats">
+    ${statCard("Student Records",students.length,"Fictional names")}
+    ${statCard("Faculty Records",faculty.length,"Fictional names")}
+    ${statCard("Courses",courses.length,"Illustrative catalogue")}
+    ${statCard("Departments",departments.length,"Sample departments")}
+  </div>
+  <p class="hint">Verify establishment history, official courses, fee schedules and current officeholders using college-approved sources before using this page for any official purpose.</p>`;
 }
 
-/* -------------------------------
-   Dashboard totals
--------------------------------- */
-
-function renderStats() {
-  const total = students.length;
-  const averageAttendance = total
-    ? Math.round(students.reduce((sum, student) => sum + (Number(student.attendance) || 0), 0) / total)
-    : 0;
-
-  const representedCourses = new Set(students.map(student => student.course)).size;
-
-  document.getElementById("totalStudents").textContent = total;
-  document.getElementById("studentCount").textContent = total;
-  document.getElementById("totalCourses").textContent = courseInfo.length;
-  document.getElementById("totalFaculty").textContent = faculty.length;
-  document.getElementById("averageAttendance").textContent = `${averageAttendance}%`;
-  document.getElementById("studentAvgAttendance").textContent = `${averageAttendance}%`;
-  document.getElementById("representedCourses").textContent = representedCourses;
-  document.getElementById("academicStudents").textContent = total;
-  document.getElementById("academicCourses").textContent = courseInfo.length;
-}
-
-function renderAll() {
-  renderStats();
-  renderCourseFilter();
-  renderStudentTable();
-  renderRecentStudents();
-  renderAttendance();
-  renderPerformance();
-  renderFees();
-  renderParents();
-  renderFaculty();
-  renderCourses();
-}
-
-/* -------------------------------
-   Initial page setup
--------------------------------- */
-
-document.getElementById("todayDate").textContent =
-  new Date().toLocaleDateString("en-IN", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
-
-document.getElementById("year").textContent = new Date().getFullYear();
-
-renderAll();
-
+renderPage("dashboard");
