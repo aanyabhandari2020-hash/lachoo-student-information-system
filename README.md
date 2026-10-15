@@ -1,15 +1,42 @@
-# Lachoo Memorial College of Science and Technology
-## Student Information System — College ERP Dashboard
 
-### 📌 Project Overview
+# Lachoo Memorial College Student Information System
 
-The **Student Information System** is a web-based college ERP dashboard developed as a student project using HTML, CSS, and JavaScript. It provides a centralized interface for demonstrating student record management, academic performance, attendance, fee records, faculty information, and other college-related activities.
+## Introduction
+The Student Information System is a front-end web development project designed to demonstrate how a college can organize student records, faculty information, courses, admissions, fees, attendance, and marks through a single dashboard.
 
-The project features a modern dashboard design with sidebar navigation, summary cards, searchable records, and interactive forms.
+## Technologies Used
+- HTML5
+- CSS3
+- JavaScript
+- Browser Local Storage
+- GitHub Pages
 
-### 🎯 Objectives
+## Features
+- Admin and guest login demonstration
+- Dashboard with student, faculty, and fee statistics
+- 30 fictional student records
+- 40 fictional faculty records
+- Add, edit, delete, and search students
+- Course and admission directories
+- Paid, pending, and partial fee reports
+- Attendance and marks registers
+- Student data export to CSV
+- College profile and administration section
+- Responsive layout for desktop and mobile
 
-- Create a user-friendly student information dashboard.
-- Demonstrate student record management operations.
-- Display academic performance and attendance percentages.
-- Organize course, program, examination, and
+## Demo Login
+- Username: admin
+- Password: Lachoo@123
+
+Guests can view records. Administrators can manage student records.
+
+## How to Run
+1. Open index.html in a web browser, or publish the repository using GitHub Pages.
+2. Select Guest or Administrator on the login screen.
+3. Use the dashboard navigation to explore the features.
+
+## Important Note
+This project uses fictional student and faculty information. It is an educational demonstration, not an official college database. The demo login is not secure authentication, and browser local storage is not a secure database.
+
+## Author
+Student Web Development Project
